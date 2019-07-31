@@ -16,8 +16,13 @@ var player;
 var gameGravity = 580;
 var pipeInterval = 1.75 * Phaser.Timer.SECOND;
 var jumpPower = -200;
-var pipeGap = 100;
+var pipeGap = 150;
 var pipes = [];
+var gapMargin = 50;
+
+var blockHeight = 50
+var pipeEndExtraWidth = 10;
+var pipeEndHeight = 25;
 /*
  * Loads all resources for the game and gives them names.
  */
@@ -25,7 +30,9 @@ var pipes = [];
 function preload() {
   game.load.image('playerimg','../assets/flappy.png');
   game.load.audio('score','../assets/point.ogg');
-  game.load.image("pipeBlock","../assets/pipe.png");
+  game.load.image("pipeBlock","../assets/pipe_blue.png");
+  game.load.image("pipeEnd","../assets/pipe-end.png");
+  game.load.image("background","../assets/download (1) copy.jpeg")
 }
 
 
@@ -34,16 +41,17 @@ function preload() {
  */
 function create() {
     // set the background colour of the scene
-    game.stage.setBackgroundColor('#0066ff');
+    game.stage.setBackgroundColor('#000000');
+    bg=game.add.image(0,0,"background");
+    bg.scale.setTo(2,2)
     // game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(space);
 
-    labelScore=game.add.text(20,20,"0");                               
+    labelScore=game.add.text(20,20,"0", {font: "60px Arial", fill: "#ffffff"});
     player = game.add.sprite(100,200,"playerimg");
     // game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(moveRight);
     // game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onDown.add(moveLeft);
     // game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(moveUp);
     // game.input.keyboard.addKey(Phaser.Keyboard.DOWN).onDown.add(moveDown);
-    player.anchor.setTo(0.5,0.5)
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.arcade.enable(player);
     player.body.gravity.y = gameGravity;
@@ -51,7 +59,7 @@ function create() {
     .addKey(Phaser.Keyboard.SPACEBAR)
     .onDown.add(playerJump)
     game.input.onDown.add(playerJump);
-
+    player.anchor.setTo(0.5, 0.5);
     game.time.events.loop(pipeInterval, generatePipe);
 
 }
@@ -97,16 +105,31 @@ function moveDown(){
    player.body.velocity.y = jumpPower;
  }
 
+function addPipeEnd(x,y){
+  var block = game.add.sprite(x, y, "pipeEnd");
+  pipes.push(block);
+  game.physics.arcade.enable(block);
+  block.body.velocity.x = -200;
+}
 
 function generatePipe(){
-  var gapStart = game.rnd.integerInRange(1, 5);
-  for(var count=0; count<8; count+=1){
-    if (count != gapStart && count != gapStart + 1){
-      addPipeBlock(width-50,50*count);
-    }
+  var gapStart = game.rnd.integerInRange(gapMargin, height - pipeGap - gapMargin);
+
+  addPipeEnd(width - (pipeEndExtraWidth / 2), gapStart);
+
+  for(var y = gapStart; y > 0; y -= blockHeight){
+    addPipeBlock(width, y - blockHeight);
   }
-  changeScore();
+
+  addPipeEnd(width - (pipeEndExtraWidth / 2), gapStart + pipeGap)
+
+  for(var y = gapStart + pipeGap + pipeEndHeight; y < height; y += blockHeight) {
+    addPipeBlock(width, y);
+  }
+
+   changeScore();
 }
+
 
 function addPipeBlock(x,y){
   var block = game.add.sprite(x, y, "pipeBlock");
@@ -119,6 +142,8 @@ function update() {
   if (player.y<=0 || player.y>=height){
       gameOver();
     }
+  player.rotation = Math.atan(player.body.velocity.y / 200);
+  pipeGap-=0.05
 }
 function gameOver(){
   alert("Game over. Your score is:"+score)
