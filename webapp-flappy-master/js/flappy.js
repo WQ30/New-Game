@@ -35,7 +35,7 @@ function preload() {
 function create() {
     // set the background colour of the scene
     game.stage.setBackgroundColor('#0066ff');
-    // game.input.onDown.add(click);
+    game.input.onDown.add(playerJump);
     // game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(space);
 
     labelScore=game.add.text(20,20,"0");                               
