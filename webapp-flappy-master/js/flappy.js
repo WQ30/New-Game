@@ -126,6 +126,7 @@ function generatePipe(){
   for(var y = gapStart + pipeGap + pipeEndHeight; y < height; y += blockHeight) {
     addPipeBlock(width, y);
   }
+    pipeGap-=0.05
 
    changeScore();
 }
@@ -143,7 +144,7 @@ function update() {
       gameOver();
     }
   player.rotation = Math.atan(player.body.velocity.y / 200);
-  pipeGap-=0.05
+
 }
 function gameOver(){
   alert("Game over. Your score is:"+score)
