@@ -126,7 +126,7 @@ function generatePipe(){
   for(var y = gapStart + pipeGap + pipeEndHeight; y < height; y += blockHeight) {
     addPipeBlock(width, y);
   }
-    pipeGap-=0.05
+    pipeGap-=3
 
    changeScore();
 }
