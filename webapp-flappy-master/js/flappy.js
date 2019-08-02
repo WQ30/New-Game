@@ -13,23 +13,24 @@ var game = new Phaser.Game(width, height, Phaser.AUTO, 'game', stateActions);
 var score = -2;
 var labelscore;
 var player;
-var gameGravity = 580;
-var pipeInterval = 1.75 * Phaser.Timer.SECOND;
+var gameGravity = 600;
+var pipeInterval = 1.5* Phaser.Timer.SECOND;
 var jumpPower = -200;
-var pipeGap = 150;
+var pipeGap = 125;
 var pipes = [];
 var gapMargin = 50;
 
 var blockHeight = 50
 var pipeEndExtraWidth = 10;
 var pipeEndHeight = 25;
+var gameSpeed=250;
 /*
  * Loads all resources for the game and gives them names.
  */
 
 function preload() {
   game.load.image('playerimg','../assets/flappy.png');
-  game.load.audio('score','../assets/point.ogg');
+  game.load.audio('music', '../assets/Minecraft.m4a');
   game.load.image("pipeBlock","../assets/pipe_blue.png");
   game.load.image("pipeEnd","../assets/pipe-end.png");
   game.load.image("background","../assets/download (1) copy.jpeg")
@@ -40,6 +41,7 @@ function preload() {
  * Initialises the game. This function is only called once.
  */
 function create() {
+    game.sound.play("music");
     // set the background colour of the scene
     game.stage.setBackgroundColor('#000000');
     bg=game.add.image(0,0,"background");
@@ -109,7 +111,7 @@ function addPipeEnd(x,y){
   var block = game.add.sprite(x, y, "pipeEnd");
   pipes.push(block);
   game.physics.arcade.enable(block);
-  block.body.velocity.x = -200;
+  block.body.velocity.x = -gameSpeed;
 }
 
 function generatePipe(){
@@ -127,7 +129,7 @@ function generatePipe(){
     addPipeBlock(width, y);
   }
     pipeGap-=1
-
+    gameSpeed+=10
    changeScore();
 }
 
@@ -136,7 +138,7 @@ function addPipeBlock(x,y){
   var block = game.add.sprite(x, y, "pipeBlock");
   pipes.push(block);
   game.physics.arcade.enable(block);
-  block.body.velocity.x = -200;
+  block.body.velocity.x = -gameSpeed;
 }
 function update() {
   game.physics.arcade.overlap(player,pipes,gameOver);
