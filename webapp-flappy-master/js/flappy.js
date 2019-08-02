@@ -23,7 +23,7 @@ var gapMargin = 50;
 var blockHeight = 50
 var pipeEndExtraWidth = 10;
 var pipeEndHeight = 25;
-var gameSpeed=250;
+var gameSpeed=300;
 /*
  * Loads all resources for the game and gives them names.
  */
@@ -128,7 +128,7 @@ function generatePipe(){
   for(var y = gapStart + pipeGap + pipeEndHeight; y < height; y += blockHeight) {
     addPipeBlock(width, y);
   }
-    pipeGap-=1
+    pipeGap-=3
     gameSpeed+=10
    changeScore();
 }
